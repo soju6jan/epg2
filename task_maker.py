@@ -72,7 +72,7 @@ class Task(object):
             try:
                 logger.debug(f">>>> {index} / {len(channel_list)} : {channel.name} UPDATED TIME:[{channel.update_time}]")
                 #if Task.is_need_epg_make(channel) == False and len(channel.programs) > 0 and channel.epg_from != 'seezn' and channel.name not in ['VIKI']:
-                if Task.is_need_epg_make(channel) == False and len(channel.programs) > 0:# and channel.epg_from != 'seezn':
+                if Task.is_need_epg_make(channel) == False and len(channel.programs) > 0 and channel.epg_from != 'seezn':
                     #logger.debug(u'만든지 1일 미만이라 패스 : %s', (now-channel.update_time))
                     continue
                 make_title.append(channel.name)
