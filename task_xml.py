@@ -22,6 +22,7 @@ class Task(object):
         need_make = 0
         plugin = args[0]
         mode = args[1]
+        Task.git_pull()
         if mode == 'manual':
             need_make = 1
         output_filepath = Task.get_output_filepath(plugin)
