@@ -100,7 +100,10 @@ class Task(object):
         logger.debug(d(make_title))
         logger.debug(len(make_title))
 
-        ModelSettingDATA.set('updated_time', datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        
+        P.ModelSettingDATA.set('updated_time', datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        from .task_xml import Task as TaskXml
+        TaskXml.make_xml('all')
 
         Task.upload()
 

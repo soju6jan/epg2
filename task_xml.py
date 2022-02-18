@@ -180,20 +180,20 @@ class Task(object):
         
         elif call_from == 'all':
             try:
-                channel_list = ModelEpgMakerChannel.get_channel_list()
+                channel_list = ModelEpg2Channel.get_list()
                 root = ET.Element('tv')
                 root.set('generator-info-name', SystemModelSetting.get('ddns'))
-                for channel in channel_list:
+                for idx, channel in enumerate(channel_list):
                     channel_tag = ET.SubElement(root, 'channel') 
-                    channel_tag.set('id', '%s' % channel.id)
+                    channel_tag.set('id', channel.name)
                     icon_tag = ET.SubElement(channel_tag, 'icon')
                     icon_tag.set('src', channel.icon)
                     display_name_tag = ET.SubElement(channel_tag, 'display-name') 
                     display_name_tag.text = channel.name
                     display_name_tag = ET.SubElement(channel_tag, 'display-number') 
-                    display_name_tag.text = str(channel.id)
+                    display_name_tag.text = str(idx+1)
                 for channel in channel_list:
-                    LogicNormal.make_channel(root, channel, '%s' % channel.id)
+                    Task.make_channel(root, channel, channel.name)
             except Exception as e: 
                 logger.error('Exception:%s', e)
                 logger.error(traceback.format_exc())
@@ -201,14 +201,14 @@ class Task(object):
        
         try:
             tree = ET.ElementTree(root)
-            filename = os.path.join(path_data, 'output', 'xmltv_%s2.xml' % call_from)
+            filename = os.path.join(path_data, 'output', f'xmltv_{call_from}2.xml')
             if os.path.exists(filename):
                 os.remove(filename)
             tree.write(filename, pretty_print=True, xml_declaration=True, encoding="utf-8")
-            ret = ET.tostring(root, pretty_print=True, xml_declaration=True, encoding="utf-8")
+            #ret = ET.tostring(root, pretty_print=True, xml_declaration=True, encoding="utf-8")
 
             ModelSetting.set('base_updated_%s' % call_from, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-            db.session.commit()
+            #db.session.commit()
             logger.debug('EPG2XML end....')
             return True
         except Exception as e: 
