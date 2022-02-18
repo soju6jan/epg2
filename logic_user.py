@@ -5,7 +5,6 @@ from flask import request, render_template, jsonify, redirect, send_file
 from .plugin import P, logger, package_name, ModelSetting, LogicModuleBase, scheduler, app, SystemModelSetting, path_data
 name = 'user'
 from .task_xml import Task
-from .task_maker import Task as TaskMaker
 
 class LogicUser(LogicModuleBase):
     db_default = {
@@ -60,7 +59,7 @@ class LogicUser(LogicModuleBase):
     
     def process_api(self, sub, req):
         try:
-            output_filepath = TaskMaker.get_output_filepath(plugin)
+            output_filepath = Task.get_output_filepath(plugin)
             if not os.path.exists(output_filepath):
                 self.task_interface(sub, 'manual').join()
             return send_file(filename, mimetype='application/xml')
