@@ -10,7 +10,7 @@ class LogicUser(LogicModuleBase):
     db_default = {
         f'{name}_db_version' : '1',
         f'{name}_auto_start' : 'False',
-        f'{name}_interval' : '120',
+        f'{name}_interval' : '30 0/12 * * *',
         f'{name}_updated_tvheadend' : '',
         f'{name}_updated_klive' : '',
         f'{name}_updated_hdhomerun' : '',
