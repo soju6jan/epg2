@@ -15,11 +15,11 @@
   <div class="tab-content" id="nav-tabContent">
     {{ macros.m_tab_content_start('normal', true) }}
       {{ macros.info_text_go('klive', 'EPG for KLive', value=arg['klive']) }}
-      {{ macros.info_text_and_buttons('updated_klive', '', [['make_klive_btn', '다시 만들기']], value='만든 시간 : ' + arg['user_updated_klive'], desc=None) }}
+      {{ macros.info_text_and_buttons('user_updated_klive', '', [['make_klive_btn', '다시 만들기']], value='만든 시간 : ' + arg['user_updated_klive'], desc=None) }}
       {{ macros.info_text_go('tvheadend', 'EPG for Tvheadend', value=arg['tvheadend']) }}
-      {{ macros.info_text_and_buttons('updated_tvheadend', '', [['make_tvheadend_btn', '다시 만들기']], value='만든 시간 : ' + arg['user_updated_tvheadend'], desc=None) }}
+      {{ macros.info_text_and_buttons('user_updated_tvheadend', '', [['make_tvheadend_btn', '다시 만들기']], value='만든 시간 : ' + arg['user_updated_tvheadend'], desc=None) }}
       {{ macros.info_text_go('hdhomerun', 'EPG for HDHomerun', value=arg['hdhomerun']) }}
-      {{ macros.info_text_and_buttons('updated_hdhomerun', '', [['make_hdhomerun_btn', '다시 만들기']], value='만든 시간 : ' + arg['user_updated_hdhomerun'], desc=None) }}
+      {{ macros.info_text_and_buttons('user_updated_hdhomerun', '', [['make_hdhomerun_btn', '다시 만들기']], value='만든 시간 : ' + arg['user_updated_hdhomerun'], desc=None) }}
       {{ macros.info_text_go('all', 'EPG for ALL', value=arg['all']) }}
     {{ macros.m_tab_content_end() }}
 

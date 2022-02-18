@@ -95,7 +95,7 @@ class Task(object):
                     display_name_tag.text = str(tvh['GuideNumber'])
 
                 for tvh in tvh_list['lineup']:
-                    if tvh_ch['channel_instance'] == None:
+                    if tvh['channel_instance'] == None:
                         logger.debug('no channel_instance :%s', tvh)
                         continue
                     Task.make_channel(root, tvh['channel_instance'], tvh['uuid'])
@@ -226,7 +226,7 @@ class Task(object):
             tree.write(filename, pretty_print=True, xml_declaration=True, encoding="utf-8")
             #ret = ET.tostring(root, pretty_print=True, xml_declaration=True, encoding="utf-8")
 
-            ModelSetting.set('base_updated_%s' % call_from, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+            ModelSetting.set('user_updated_%s' % call_from, datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             #db.session.commit()
             logger.debug('EPG2XML end....')
             return True
