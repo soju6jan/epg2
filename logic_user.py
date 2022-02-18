@@ -59,7 +59,7 @@ class LogicUser(LogicModuleBase):
     
     def process_api(self, sub, req):
         try:
-            output_filepath = Task.get_output_filepath(plugin)
+            output_filepath = Task.get_output_filepath(sub)
             if not os.path.exists(output_filepath):
                 self.task_interface(sub, 'manual').join()
             return send_file(filename, mimetype='application/xml')
