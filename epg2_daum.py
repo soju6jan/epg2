@@ -76,7 +76,7 @@ class EntityProgram(object):
             self.dt = datetime(entity_day.dt.year, entity_day.dt.month, entity_day.dt.day, hour, minute)
             entity_day.program_list.append(self)
         except Exception as e: 
-            logger.error('Exception:%s', e)
+            logger.error(f'Exception:{str(e)}')
             logger.error(traceback.format_exc())
 
     
@@ -160,7 +160,7 @@ class Epg2Daum(object):
             logger.debug(u'- %s개 저장', len(ret))
             return True
         except Exception as e: 
-            logger.error('Exception:%s', e)
+            logger.error(f'Exception:{str(e)}')
             logger.error(traceback.format_exc())
             logger.debug(url)
             return False

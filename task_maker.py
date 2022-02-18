@@ -92,7 +92,7 @@ class Task(object):
                         channel.update_time = datetime.now()
                         break
             except Exception as e: 
-                logger.error('Exception:%s', e)
+                logger.error(f'Exception:{str(e)}')
                 logger.error(traceback.format_exc())
                 logger.debug('XX :%s', channel)
             finally:
@@ -102,7 +102,7 @@ class Task(object):
         logger.debug(d(make_title))
         logger.debug(len(make_title))
         logger.info(make_count)
-        if make_count > 0:
+        if make_count > -1:
             P.ModelSettingDATA.set('updated_time', datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             from .task_xml import Task as TaskXml
             TaskXml.make_xml('all')
@@ -138,7 +138,7 @@ class Task(object):
     @staticmethod
     def upload():
         epg_sh = os.path.join(os.path.dirname(__file__), 'file', 'epg_upload.sh')
-        
+        os.system(f"chmod 777 {os.path.dirname(__file__)}")
         os.system(f"{epg_sh} {os.path.dirname(__file__)}")
 
  

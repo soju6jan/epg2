@@ -13,9 +13,10 @@ class P(object):
     menu = {
         'main' : [package_name, u'EPG v2'],
         'sub' : [
-            ['user', 'User'], ['maker', 'Maker'], ['manual', '매뉴얼'], ['log', u'로그']
+            #['user', 'User'], ['maker', 'Maker'], ['manual', '매뉴얼'], ['log', u'로그']
+            ['user', 'User'], ['maker', 'Maker'], ['log', u'로그']
         ], 
-        'category' : 'beta',
+        'category' : 'tv',
         'sub2' : {
             'user' : [
                 ['setting', '설정']
@@ -23,9 +24,9 @@ class P(object):
             'maker' : [
                 ['setting', '설정']
             ],
-            'manual' : [
-                ['README.md', 'README']
-            ],
+            #'manual' : [
+            #    ['README.md', 'README']
+            #],
         }
     }  
 
@@ -43,9 +44,9 @@ class P(object):
     ModelSettingDATA = get_model_setting(EPG_DATA_DB_BIND_KEY, logger)
     logic = None
     module_list = None
-    home_module = 'base'
+    home_module = 'user'
 
-
+    
 from tool_base import d
 logger = P.logger
 package_name = P.package_name
@@ -54,6 +55,9 @@ ModelSetting = P.ModelSetting
 
 def initialize():
     try:
+        if os.path.exists(os.path.join(os.path.dirname(__file__), 'file', 'cred')) == False:
+            del P.menu['sub'][1]
+
         app.config['SQLALCHEMY_BINDS'][P.package_name] = 'sqlite:///%s' % (os.path.join(path_data, 'db', '{package_name}.db'.format(package_name=P.package_name)))
         app.config['SQLALCHEMY_BINDS'][EPG_DATA_DB_BIND_KEY] = 'sqlite:///%s' % (os.path.join(os.path.dirname(__file__), 'file', f'{EPG_DATA_DB_BIND_KEY}.db'))
 
@@ -65,7 +69,7 @@ def initialize():
         P.logic = Logic(P)
         default_route(P)
     except Exception as e: 
-        P.logger.error('Exception:%s', e)
+        P.logger.error(f'Exception:{str(e)}')
         P.logger.error(traceback.format_exc())
 
 initialize()

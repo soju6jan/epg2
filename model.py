@@ -138,7 +138,7 @@ class ModelEpg2Channel(ModelBase):
         try:
             return db.session.query(ModelEpgMakerChannel).filter_by(name=name).first()
         except Exception as e: 
-            logger.error('Exception:%s', e)
+            logger.error(f'Exception:{str(e)}')
             logger.error(traceback.format_exc())
 
     @staticmethod
@@ -148,7 +148,7 @@ class ModelEpg2Channel(ModelBase):
             #ret = [x.as_dict() for x in channel_list]
             return channel_list
         except Exception as e: 
-            logger.error('Exception:%s', e)
+            logger.error(f'Exception:{str(e)}')
             logger.error(traceback.format_exc())
 
     
@@ -229,7 +229,7 @@ class ModelEpg2Program(ModelBase):
                 db.session.add(c)
             db.session.commit()
         except Exception as e: 
-            logger.error('Exception:%s', e)
+            logger.error(f'Exception:{str(e)}')
             logger.error(traceback.format_exc()) 
 
 

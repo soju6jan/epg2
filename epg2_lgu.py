@@ -63,7 +63,7 @@ class Epg2Lgu(object):
             logger.warning(f"LGU {channel.name} {len(epg_data)}개 추가")
             return True
         except Exception as e: 
-            logger.error('Exception:%s', e)
+            logger.error(f'Exception:{str(e)}')
             logger.error(traceback.format_exc())
             return False
 

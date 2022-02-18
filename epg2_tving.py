@@ -94,7 +94,7 @@ class Epg2Tving(object):
             db.session.commit()
             return True
         except Exception as e: 
-            logger.error('Exception:%s', e)
+            logger.error(f'Exception:{str(e)}')
             logger.error(traceback.format_exc())
 
 

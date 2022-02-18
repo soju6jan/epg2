@@ -76,7 +76,7 @@ class Task(object):
                     epg_entity = ModelEpg2Channel.get_by_prefer(tvh_ch['GuideName'])
                     tvh_ch['channel_instance'] = epg_entity
             except Exception as e: 
-                logger.error('Exception:%s', e)
+                logger.error(f'Exception:{str(e)}')
                 logger.error(traceback.format_exc())
 
             try:
@@ -99,7 +99,7 @@ class Task(object):
                         continue
                     Task.make_channel(root, tvh['channel_instance'], tvh['uuid'])
             except Exception as e: 
-                logger.error('Exception:%s', e)
+                logger.error(f'Exception:{str(e)}')
                 logger.error(traceback.format_exc())
                 return traceback.format_exc()
 
@@ -148,7 +148,7 @@ class Task(object):
                                      
                     Task.make_channel(root, epg_entity, '%s|%s' % (klive_channel.source, klive_channel.source_id), category=klive_channel.group)
             except Exception as e: 
-                logger.error('Exception:%s', e)
+                logger.error(f'Exception:{str(e)}')
                 logger.error(traceback.format_exc())
                 return traceback.format_exc()
 
@@ -186,7 +186,7 @@ class Task(object):
                     Task.make_channel(root, epg_entity, '%s' % channel.id)
                    
             except Exception as e: 
-                logger.error('Exception:%s', e)
+                logger.error(f'Exception:{str(e)}')
                 logger.error(traceback.format_exc())
                 return traceback.format_exc()
         
@@ -210,7 +210,7 @@ class Task(object):
                 for channel in channel_list:
                     Task.make_channel(root, channel, channel.name)
             except Exception as e: 
-                logger.error('Exception:%s', e)
+                logger.error(f'Exception:{str(e)}')
                 logger.error(traceback.format_exc())
                 return traceback.format_exc()
        
@@ -230,7 +230,7 @@ class Task(object):
             logger.debug('EPG2XML end....')
             return True
         except Exception as e: 
-            logger.error('Exception:%s', e)
+            logger.error(f'Exception:{str(e)}')
             logger.error(traceback.format_exc())
 
    
@@ -317,5 +317,16 @@ class Task(object):
                         episode_num_tag.text = '%s.%s.' % (int(tmp[:4])-1, int(tmp[4:]) - 1)
                 
         except Exception as e: 
-            logger.error('Exception:%s', e)
+            logger.error(f'Exception:{str(e)}')
+            logger.error(traceback.format_exc())
+
+
+    @staticmethod
+    def git_pull():
+        try:
+            epg_sh = os.path.join(os.path.dirname(__file__), 'file', 'epg_pull.sh')
+            os.system(f"chmod 777 {os.path.dirname(__file__)}")
+            os.system(f"{epg_sh} {os.path.dirname(__file__)}")
+        except Exception as e: 
+            logger.error(f'Exception:{str(e)}')
             logger.error(traceback.format_exc())

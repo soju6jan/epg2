@@ -16,15 +16,12 @@
     <!-- 일반 -->
     {{ macros.m_tab_content_start('normal', true) }}
       {{ macros.setting_button([['sheet_all_btn', '전체'], ['sheet_daum_btn', 'Daum'], ['sheet_wavve_btn', '웨이브'],['sheet_tving_btn', '티빙'], ['sheet_seezn_btn', '시즌'], ['sheet_skb_btn', 'SKB'], ['sheet_kt_btn', 'KT'], ['sheet_lgu_btn', 'LGU'], ['sheet_hcn_btn', 'HCN'], ['sheet_cmb_btn', 'CMB'], ['sheet_kctv_btn', 'KCTV'], ['sheet_kt_logo_btn', 'KT 로고'], ['sheet_last_logo_btn', '최종 로고'],], left='시트 작업' ) }}
-      {{ macros.setting_button([['make_xmltv_all_btn', 'EPG ALL']], left='작업' ) }}
-      {{ macros.setting_button([['sjva_support_commit_btn', 'SJVA Support에 커밋']], left='작업' ) }}
-      {{ macros.setting_button([['global_one_execute_btn', '1회 실행']], left='1회 실행' ) }}
     {{ macros.m_tab_content_end() }}
 
     {{ macros.m_tab_content_start('auto', false) }}
       {{ macros.setting_global_scheduler_sub_button(arg['scheduler'], arg['is_running']) }}
-      {{ macros.setting_input_text('simple_interval', '스케쥴링 실행 정보', value=arg['simple_interval'], col='3', desc=['Inverval(minute 단위)이나 Cron 설정']) }}
-      {{ macros.setting_checkbox('simple_auto_start', '시작시 자동실행', value=arg['simple_auto_start'], desc='On : 시작시 자동으로 스케쥴러에 등록됩니다.') }}
+      {{ macros.setting_input_text('maker_interval', '스케쥴링 실행 정보', value=arg['maker_interval'], col='3', desc=['Inverval(minute 단위)이나 Cron 설정']) }}
+      {{ macros.setting_checkbox('maker_auto_start', '시작시 자동실행', value=arg['maker_auto_start'], desc='On : 시작시 자동으로 스케쥴러에 등록됩니다.') }}
     {{ macros.m_tab_content_end() }}
   </div><!--tab-content-->
   </form>
@@ -107,95 +104,5 @@ $("body").on('click', '#sheet_last_logo_btn', function(e){
 });
 
 
-
-
-$("body").on('click', '#make_channel_json_btn', function(e){
-  e.preventDefault();
-  $.ajax({
-    url: '/' + package_name + '/ajax/make_channel_json',
-    type: "POST", 
-    cache: false,
-    data: {},
-    dataType: "json",
-    success: function (data) {
-      if (data != 'fail' && data != null) {
-        //m_modal(data.data)
-        $.notify('<strong>채널 : '+ data +'</strong>',{
-          type: 'success'
-        });
-      } else {
-        $.notify('<strong>실패하였습니다.</strong>',{
-          type: 'warning'
-        });
-      }
-    }
-  });
-});
-
-$("body").on('click', '#new_create_db_file_btn', function(e){
-  e.preventDefault();
-  $.ajax({
-    url: '/' + package_name + '/ajax/new_create_db_file',
-    type: "POST", 
-    cache: false,
-    data: {},
-    dataType: "json",
-    success: function (data) {
-      if (data != 'fail') {
-        $.notify('<strong>DB 채널 : '+data+'</strong>',{
-          type: 'success'
-        });
-      } else {
-        $.notify('<strong>실패하였습니다.</strong>',{
-          type: 'warning'
-        });
-      }
-    }
-  });
-});
-
-$("body").on('click', '#sjva_support_commit_btn', function(e){
-  e.preventDefault();
-  $.ajax({
-    url: '/' + package_name + '/ajax/sjva_support_commit',
-    type: "POST", 
-    cache: false,
-    data: {},
-    dataType: "json",
-    success: function (data) {
-      if (data != 'fail') {
-        $.notify('<strong>DB 채널 : '+data+'</strong>',{
-          type: 'success'
-        });
-      } else {
-        $.notify('<strong>실패하였습니다.</strong>',{
-          type: 'warning'
-        });
-      }
-    }
-  });
-});
-
-$("body").on('click', '#make_xmltv_all_btn', function(e){
-  e.preventDefault();
-  $.ajax({
-    url: '/' + package_name + '/ajax/make_xmltv_all',
-    type: "POST", 
-    cache: false,
-    data: {},
-    dataType: "json",
-    success: function (data) {
-      if (data != 'fail') {
-        $.notify('<strong>DB 채널 : '+data+'</strong>',{
-          type: 'success'
-        });
-      } else {
-        $.notify('<strong>실패하였습니다.</strong>',{
-          type: 'warning'
-        });
-      }
-    }
-  });
-});
 </script>    
 {% endblock %}
