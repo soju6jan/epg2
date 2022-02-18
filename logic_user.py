@@ -62,7 +62,7 @@ class LogicUser(LogicModuleBase):
             output_filepath = Task.get_output_filepath(sub)
             if not os.path.exists(output_filepath):
                 self.task_interface(sub, 'manual').join()
-            return send_file(filename, mimetype='application/xml')
+            return send_file(output_filepath, mimetype='application/xml')
         except Exception as e: 
             P.logger.error(f'Exception:{str(e)}')
             P.logger.error(traceback.format_exc())
