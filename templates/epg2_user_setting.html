@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div>
+  {{ macros.m_button_group([['global_setting_save_btn', '설정 저장'], ['global_one_execute_sub_btn', '1회 실행'], ['global_immediately_execute_sub_btn', '바로 실행'] ])}}
+  {{ macros.m_row_start('5') }}
+  {{ macros.m_row_end() }}
+  <nav>
+    {{ macros.m_tab_head_start() }}
+      {{ macros.m_tab_head2('normal', '설정', true) }}
+      {{ macros.m_tab_head2('auto', '자동 & 기타', false) }}
+    {{ macros.m_tab_head_end() }}
+  </nav>
+  <form id='setting' name='setting'>
+  <div class="tab-content" id="nav-tabContent">
+    {{ macros.m_tab_content_start('normal', true) }}
+      {{ macros.info_text_go('klive', 'EPG for KLive', value=arg['klive']) }}
+      {{ macros.info_text_and_buttons('updated_klive', '', [['make_klive_btn', '다시 만들기']], value='만든 시간 : ' + arg['user_updated_klive'], desc=None) }}
+      {{ macros.info_text_go('tvheadend', 'EPG for Tvheadend', value=arg['tvheadend']) }}
+      {{ macros.info_text_and_buttons('updated_tvheadend', '', [['make_tvheadend_btn', '다시 만들기']], value='만든 시간 : ' + arg['user_updated_tvheadend'], desc=None) }}
+      {{ macros.info_text_go('hdhomerun', 'EPG for HDHomerun', value=arg['hdhomerun']) }}
+      {{ macros.info_text_and_buttons('updated_hdhomerun', '', [['make_hdhomerun_btn', '다시 만들기']], value='만든 시간 : ' + arg['user_updated_hdhomerun'], desc=None) }}
+      {{ macros.info_text_go('all', 'EPG for ALL', value=arg['all']) }}
+    {{ macros.m_tab_content_end() }}
+
+    {{ macros.m_tab_content_start('auto', false) }}
+      {{ macros.setting_global_scheduler_button(arg['scheduler'], arg['is_running']) }}
+      {{ macros.setting_input_text('user_interval', '스케쥴링 실행 정보', value=arg['user_interval'], col='3', desc=['Inverval(minute 단위)이나 Cron 설정']) }}
+      {{ macros.setting_checkbox('user_auto_start', '시작시 자동실행', value=arg['user_auto_start'], desc=['On : 시작시 자동으로 스케쥴러에 등록됩니다.', 'EPG 스케쥴러는 자동으로 최신의 EPG를 가져온 후 EPG 파일을 만들어줍니다.']) }}
+    {{ macros.m_tab_content_end() }}
+
+    
+  </div><!--tab-content-->
+  </form>
+</div> <!--전체-->
+
+
+<script type="text/javascript">
+var package_name = "{{arg['package_name']}}";
+var current_data = null;
+var sub = "{{arg['sub']}}";
+
+$(document).ready(function(){
+});
+
+$("body").on('click', '#make_klive_btn', function(e){
+  e.preventDefault();
+  global_send_command2('make', 'klive');
+});
+
+$("body").on('click', '#make_tvheadend_btn', function(e){
+  e.preventDefault();
+  global_send_command2('make', 'tvheadend');
+});
+
+$("body").on('click', '#make_hdhomerun_btn', function(e){
+  e.preventDefault();
+  global_send_command2('make', 'hdhomerun');
+});
+
+
+function make_xml(sub) {
+  $.ajax({
+    url: '/' + package_name + '/ajax/make_xml',
+    type: "POST", 
+    cache: false,
+    data:{sub:sub},
+    dataType: "json",
+    success: function (data) {
+      if (data) {
+        $.notify('<strong>EPG 생성중입니다. 잠시 후 생성시간을 확인하세요</strong>', {
+          type: 'success'
+        });
+      } else {
+        $.notify('<strong>실패</strong>', {
+          type: 'warning'
+        });
+      }
+    }
+  });
+}
+</script>    
+{% endblock %}
