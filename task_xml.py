@@ -8,20 +8,60 @@ from lxml import etree as ET
 
 class Task(object):
 
+    @staticmethod 
+    def get_output_filepath(plugin):
+        if plugin == 'all':
+            filename = os.path.join(os.path.dirname(__file__), 'file', f'xmltv_{plugin}2.xml')
+        else:
+            filename = os.path.join(path_data, 'output', f'xmltv_{plugin}2.xml')
+        return filename
+
     @staticmethod
     @celery.task
     def start(*args, **kargs):
+        need_make = 0
+        plugin = args[0]
+        mode = args[1]
+        if mode == 'manual':
+            need_make = 1
+        output_filepath = Task.get_output_filepath(plugin)
+        if need_make == False and os.path.exists(output_filepath) == False:
+            need_make = 2
 
-        if args[0] == 'klive':
+        if need_make == False:
+            time_str = ModelSetting.get(f"user_updated_{plugin}")
+            if time_str == '':
+                need_make = 3
+            else:
+                update_dt = datetime.strptime(time_str, '%Y-%m-%d %H:%M:%S')
+                epg_dt = datetime.strptime(P.ModelSettingDATA.get('updated_time'), '%Y-%m-%d %H:%M:%S')
+                if update_dt < epg_dt:
+                    need_make = 4
+
+        logger.info(f"EPG 생성 : {plugin} {mode} {need_make}")
+        if need_make == 0:
+            return
+
+        
+        if plugin == 'klive':
             try:
                 import klive
-                #if ret == 'refresh' or (ret=='recent' and os.path.exists(os.path.join(path_data, 'output', 'xmltv_klive.xml')) == False):
-                if True:
-                    logger.debug('EPG klive epg make start..')
-                    Task.make_xml('klive')
-                    logger.debug('EPG klive epg make end..')
+                Task.make_xml('klive')
             except Exception as e: 
                 logger.error('klive not installed')
+        elif plugin == 'hdhomerun':
+            try:
+                import hdhomerun
+                Task.make_xml('hdhomerun')
+            except Exception as e: 
+                logger.error('hdhomerun not installed')
+        elif plugin == 'tvheadend':
+            try:
+                import tvheadend
+                Task.make_xml('tvheadend')
+            except Exception as e: 
+                logger.error('tvheadend not installed')
+        logger.debug(f'EPG {plugin} epg make start..')
 
     @staticmethod
     def make_xml(call_from):
@@ -29,65 +69,35 @@ class Task(object):
         if call_from == 'tvheadend':
             try:
                 import tvheadend
-                channel_list = db.session.query(ModelEpgMakerChannel).all()
                 tvh_list = tvheadend.LogicNormal.channel_list()
                 if tvh_list is None:
                     return 'not setting tvheadend'
                 for tvh_ch in tvh_list['lineup']:
-                    search_name = ModelEpgMakerChannel.util_get_search_name(tvh_ch['GuideName'])
-                    #logger.debug('%s %s', search_name, type(search_name))
-                    for t in channel_list:
-                        #logger.debug(t.search_name.split('|')) 
-                        if search_name in t.search_name.split('|'):
-                            tvh_ch['channel_instance'] = t
-                            break
-                    if 'channel_instance' not in tvh_ch:
-                        logger.debug('NOT MATCH : %s', tvh_ch['GuideName'])
+                    epg_entity = ModelEpg2Channel.get_by_prefer(tvh_ch['GuideName'])
+                    tvh_ch['channel_instance'] = epg_entity
             except Exception as e: 
                 logger.error('Exception:%s', e)
                 logger.error(traceback.format_exc())
 
             try:
                 generated_on = str(datetime.now())
-                logger.debug(generated_on)
-                #channel_list = db.session.query(ModelEpgMakerChannel).all()
-                #for channel in channel_list:
-
                 root = ET.Element('tv')
                 root.set('generator-info-name', SystemModelSetting.get('ddns'))
-                
                 for tvh in tvh_list['lineup']:
-                #for channel in channel_list:
-                    logger.debug(tvh['GuideName'])
-                    logger.debug(tvh)
-                    if 'channel_instance' not in tvh:
-                        logger.debug('no channel_instance :%s', tvh['GuideName'])
-                        continue
-                    #channel = tvh['channel_instance']
                     channel_tag = ET.SubElement(root, 'channel') 
-                    #channel_tag.set('id', '%s' % channel.id)
-                    
-
                     channel_tag.set('id', '%s' % tvh['uuid'])
-                    if 'channel_instance' not in tvh:
-                        logger.debug('no channel_instance :%s', tvh)
-                        continue
                     icon_tag = ET.SubElement(channel_tag, 'icon')
                     icon_tag.set('src', tvh['channel_instance'].icon)
                     display_name_tag = ET.SubElement(channel_tag, 'display-name') 
-                    #display_name_tag.text = channel.name
                     display_name_tag.text = tvh['GuideName']
                     display_name_tag = ET.SubElement(channel_tag, 'display-name') 
                     display_name_tag.text = str(tvh['GuideNumber'])
 
                 for tvh in tvh_list['lineup']:
-                #for channel in channel_list:
-                    #logger.debug(tvh['GuideName'])
-                    if 'channel_instance' not in tvh:
+                    if tvh_ch['channel_instance'] == None:
                         logger.debug('no channel_instance :%s', tvh)
                         continue
-                    channel = tvh['channel_instance']
-                    LogicNormal.make_channel(root, channel, tvh['uuid'])
+                    Task.make_channel(root, tvh['channel_instance'], tvh['uuid'])
             except Exception as e: 
                 logger.error('Exception:%s', e)
                 logger.error(traceback.format_exc())
@@ -153,7 +163,7 @@ class Task(object):
                 for channel in channel_list:
                     if channel.match_epg_name == '':
                         continue
-                    epg_entity = ModelEpgMakerChannel.get_instance_by_name(channel.match_epg_name)
+                    epg_entity = ModelEpg2Channel.get_by_name(channel.match_epg_name)
                     channel_tag = ET.SubElement(root, 'channel') 
                     channel_tag.set('id', '%s' % channel.id)
                     
@@ -168,10 +178,12 @@ class Task(object):
                     display_name_tag.text = str(channel.ch_number)
 
                 for channel in channel_list:
-                    epg_entity = ModelEpgMakerChannel.get_instance_by_name(channel.match_epg_name)
+                    epg_entity = ModelEpg2Channel.get_by_name(channel.match_epg_name)
                     if epg_entity is None:
-                        continue                    
-                    LogicNormal.make_channel(root, epg_entity, '%s' % channel.id)
+                        epg_entity = ModelEpg2Channel.get_by_prefer(channel.scan_name)
+                    if epg_entity is None:
+                        continue
+                    Task.make_channel(root, epg_entity, '%s' % channel.id)
                    
             except Exception as e: 
                 logger.error('Exception:%s', e)
@@ -184,6 +196,9 @@ class Task(object):
                 root = ET.Element('tv')
                 root.set('generator-info-name', SystemModelSetting.get('ddns'))
                 for idx, channel in enumerate(channel_list):
+                    if channel.category == '지상파' and channel.name not in ['KBS1', 'KBS2', 'MBC', 'SBS', 'EBS1', 'EBS2', 'OBS 경인TV']:
+                        continue
+
                     channel_tag = ET.SubElement(root, 'channel') 
                     channel_tag.set('id', channel.name)
                     icon_tag = ET.SubElement(channel_tag, 'icon')
@@ -201,7 +216,10 @@ class Task(object):
        
         try:
             tree = ET.ElementTree(root)
-            filename = os.path.join(path_data, 'output', f'xmltv_{call_from}2.xml')
+            if call_from == 'all':
+                filename = os.path.join(os.path.dirname(__file__), 'file', f'xmltv_{call_from}2.xml')
+            else:
+                filename = os.path.join(path_data, 'output', f'xmltv_{call_from}2.xml')
             if os.path.exists(filename):
                 os.remove(filename)
             tree.write(filename, pretty_print=True, xml_declaration=True, encoding="utf-8")

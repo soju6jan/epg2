@@ -5,15 +5,16 @@ from flask import request, render_template, jsonify, redirect, send_file
 from .plugin import P, logger, package_name, ModelSetting, LogicModuleBase, scheduler, app, SystemModelSetting, path_data
 name = 'user'
 from .task_xml import Task
+from .task_maker import Task as TaskMaker
 
 class LogicUser(LogicModuleBase):
     db_default = {
         f'{name}_db_version' : '1',
         f'{name}_auto_start' : 'False',
         f'{name}_interval' : '120',
-        f'{name}_updated_tvheadend' : 'No File',
-        f'{name}_updated_klive' : 'No File',
-        f'{name}_updated_hdhomerun' : 'No File',
+        f'{name}_updated_tvheadend' : '',
+        f'{name}_updated_klive' : '',
+        f'{name}_updated_hdhomerun' : '',
     }
 
     def __init__(self, P):
@@ -59,13 +60,9 @@ class LogicUser(LogicModuleBase):
     
     def process_api(self, sub, req):
         try:
-            if sub == 'all':
-                filename = os.path.join(os.path.dirname(__file__), 'file', f'xmltv_{sub}2.xml')
-            else:
-                filename = os.path.join(path_data, 'output', f'xmltv_{sub}2.xml')
-            if not os.path.exists(filename):
-                LogicNormal.make_xml(sub)
-            logger.warning(filename)
+            output_filepath = TaskMaker.get_output_filepath(plugin)
+            if not os.path.exists(output_filepath):
+                self.task_interface(sub, 'manual').join()
             return send_file(filename, mimetype='application/xml')
         except Exception as e: 
             P.logger.error(f'Exception:{str(e)}')
@@ -73,8 +70,9 @@ class LogicUser(LogicModuleBase):
             
 
     def scheduler_function(self):
-        th = self.task_interface('all', 'scheduler')        
-        th.join()
+        self.task_interface('klive', 'scheduler').join()
+        self.task_interface('hdhomerun', 'scheduler').join()
+        self.task_interface('tvheadend', 'scheduler').join()
 
     #########################################################
 
@@ -91,7 +89,4 @@ class LogicUser(LogicModuleBase):
         th.setDaemon(True)
         th.start()
         return th
-        #th.join()
-
-        logger.warning(args)
         

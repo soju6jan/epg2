@@ -2,7 +2,7 @@ import os, sys, traceback, re, json, threading, time, shutil, platform
 from datetime import datetime
 from flask import request, render_template, jsonify, redirect
 
-from .plugin import P, logger, package_name, ModelSetting, LogicModuleBase, scheduler, app
+from .plugin import P, logger, package_name, ModelSetting, LogicModuleBase, scheduler, app, db
 name = 'maker'
 from .cli_make_sheet import CliMakeSheet
 from .task_maker import Task
@@ -69,13 +69,10 @@ class LogicMaker(LogicModuleBase):
     def plugin_load(self):
         data_db_default = {
             'updated_time' : ''
-
-            
         }
         for key, value in data_db_default.items():
             if db.session.query(self.P.ModelSettingDATA).filter_by(key=key).count() == 0:
                 db.session.add(self.P.ModelSettingDATA(key, value))
-
 
     #########################################################
 

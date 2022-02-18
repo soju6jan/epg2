@@ -67,6 +67,7 @@ class Task(object):
         now = datetime.now()
 
         make_title = []
+        make_count = 0
         for index, channel in enumerate(channel_list):
             try:
                 logger.debug(f">>>> {index} / {len(channel_list)} : {channel.name} UPDATED TIME:[{channel.update_time}]")
@@ -76,7 +77,7 @@ class Task(object):
                     continue
                 make_title.append(channel.name)
                 ModelEpg2Program.delete_by_channel_name(channel.name)
-
+                
                 for epg_source in epg_map:
                     ret = getattr(channel, f"{epg_source['name']}_id")
                     if ret == '':
@@ -85,6 +86,7 @@ class Task(object):
                         continue
                     ret = epg_source['ins'].make_epg(channel)
                     if ret:
+                        make_count += 1
                         channel.epg_from = epg_source['name']
                         epg_source['count'] += 1
                         channel.update_time = datetime.now()
@@ -99,13 +101,12 @@ class Task(object):
 
         logger.debug(d(make_title))
         logger.debug(len(make_title))
-
-        
-        P.ModelSettingDATA.set('updated_time', datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-        from .task_xml import Task as TaskXml
-        TaskXml.make_xml('all')
-
-        Task.upload()
+        logger.info(make_count)
+        if make_count > 0:
+            P.ModelSettingDATA.set('updated_time', datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+            from .task_xml import Task as TaskXml
+            TaskXml.make_xml('all')
+            Task.upload()
 
     @staticmethod
     def make_channel_list(sheet):
