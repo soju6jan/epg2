@@ -87,7 +87,8 @@ class Task(object):
                     channel_tag = ET.SubElement(root, 'channel') 
                     channel_tag.set('id', '%s' % tvh['uuid'])
                     icon_tag = ET.SubElement(channel_tag, 'icon')
-                    icon_tag.set('src', tvh['channel_instance'].icon)
+                    if tvh['channel_instance'] != None:
+                        icon_tag.set('src', tvh['channel_instance'].icon)
                     display_name_tag = ET.SubElement(channel_tag, 'display-name') 
                     display_name_tag.text = tvh['GuideName']
                     display_name_tag = ET.SubElement(channel_tag, 'display-name') 
