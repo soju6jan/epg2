@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from .plugin import P, logger, db, d
 from .model import ModelEpg2Program, ModelEpg2Channel, ModelEpg2Content
 from support.site.tving import SupportTving
-from lib_metadata.site_tving import tv_mpaa_map
+
 
 # 3시간씩 호출, 채널 동시호출, 일주일 편성표
 # 포스터, Plot 정보 제공
@@ -58,6 +58,7 @@ class Epg2Tving(object):
     @classmethod
     def make_epg(cls):
         try:
+            from lib_metadata.site_tving import tv_mpaa_map
             epg_data = cls.__get_epg_data()
             for ch_id, ch_data in epg_data.items():
                 db_item = ModelEpg2Channel.get_by_source_id('tving', ch_id) 
