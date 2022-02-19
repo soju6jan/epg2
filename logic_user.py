@@ -83,7 +83,7 @@ class LogicUser(LogicModuleBase):
                 result = Task.start.apply_async(args)
                 ret = result.get()
             else:
-                ret = Task.start(args)
+                ret = Task.start(*args)
         th = threading.Thread(target=func, args=args)
         th.setDaemon(True)
         th.start()

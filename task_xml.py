@@ -18,7 +18,9 @@ class Task(object):
 
     @staticmethod
     @celery.task
-    def start(*args, **kargs):
+    def start(*args, **kwargs):
+        logger.info(f"args:{args}")
+        logger.info(f"kargs:{kwargs}")
         need_make = 0
         plugin = args[0]
         mode = args[1]
@@ -326,9 +328,13 @@ class Task(object):
     @staticmethod
     def git_pull():
         try:
-            epg_sh = os.path.join(os.path.dirname(__file__), 'file', 'epg_pull.sh')
-            os.system(f"chmod 777 {os.path.dirname(__file__)}")
-            os.system(f"{epg_sh} {os.path.dirname(__file__)}")
+            if platform.system() == 'WIndows':
+                epg_sh = os.path.join(os.path.dirname(__file__), 'file', 'epg_pull.bat')
+                os.system(f"{epg_sh} {os.path.dirname(__file__)}")
+            else:
+                epg_sh = os.path.join(os.path.dirname(__file__), 'file', 'epg_pull.sh')
+                os.system(f"chmod 777 {os.path.dirname(__file__)}")
+                os.system(f"{epg_sh} {os.path.dirname(__file__)}")
         except Exception as e: 
             logger.error(f'Exception:{str(e)}')
             logger.error(traceback.format_exc())
