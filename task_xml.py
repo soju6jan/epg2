@@ -328,7 +328,7 @@ class Task(object):
     @staticmethod
     def git_pull():
         try:
-            if platform.system() == 'WIndows':
+            if platform.system() == 'Windows':
                 epg_sh = os.path.join(os.path.dirname(__file__), 'file', 'epg_pull.bat')
                 os.system(f"{epg_sh} {os.path.dirname(__file__)}")
             else:
