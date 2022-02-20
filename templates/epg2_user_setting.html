@@ -2,7 +2,7 @@
 {% block content %}
 
 <div>
-  {{ macros.m_button_group([['global_setting_save_btn', '설정 저장'], ['global_one_execute_sub_btn', '1회 실행'], ['global_immediately_execute_sub_btn', '바로 실행'] ])}}
+  {{ macros.m_button_group([['global_setting_save_btn', '설정 저장'], ['global_one_execute_sub_btn', '1회 실행'], ['global_immediately_execute_sub_btn', '바로 실행'], ['epg_time_btn', 'EPG DB 생성 시간 확인'] ])}}
   {{ macros.m_row_start('5') }}
   {{ macros.m_row_end() }}
   <nav>
@@ -58,26 +58,11 @@ $("body").on('click', '#make_hdhomerun_btn', function(e){
   global_send_command2('make', 'hdhomerun');
 });
 
+$("body").on('click', '#epg_time_btn', function(e){
+  e.preventDefault();
+  global_send_command2('epg_time');
+});
 
-function make_xml(sub) {
-  $.ajax({
-    url: '/' + package_name + '/ajax/make_xml',
-    type: "POST", 
-    cache: false,
-    data:{sub:sub},
-    dataType: "json",
-    success: function (data) {
-      if (data) {
-        $.notify('<strong>EPG 생성중입니다. 잠시 후 생성시간을 확인하세요</strong>', {
-          type: 'success'
-        });
-      } else {
-        $.notify('<strong>실패</strong>', {
-          type: 'warning'
-        });
-      }
-    }
-  });
-}
+
 </script>    
 {% endblock %}

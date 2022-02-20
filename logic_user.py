@@ -51,6 +51,9 @@ class LogicUser(LogicModuleBase):
                 if command == 'make':
                     self.task_interface(req.form['arg1'], 'manual')
                     ret = {'ret':'success', 'msg':'생성을 시작합니다.'}
+                elif command == 'epg_time':
+                    tmp = P.ModelSettingDATA.get('updated_time')
+                    ret = {'ret':'success', 'msg':tmp}
             return jsonify(ret)
         except Exception as e: 
             P.logger.error(f'Exception:{str(e)}')
