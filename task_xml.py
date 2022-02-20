@@ -38,6 +38,8 @@ class Task(object):
             else:
                 update_dt = datetime.strptime(time_str, '%Y-%m-%d %H:%M:%S')
                 epg_dt = datetime.strptime(P.ModelSettingDATA.get('updated_time'), '%Y-%m-%d %H:%M:%S')
+                logger.info(f"update_dt : {update_dt}")
+                logger.info(f"epg_dt : {epg_dt}")
                 if update_dt < epg_dt:
                     need_make = 4
 
