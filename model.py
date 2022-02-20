@@ -109,7 +109,7 @@ class ModelEpg2Channel(ModelBase):
     def get_by_prefer(cls, name):
         channel_list = cls.get_list()
         for ch in channel_list:
-            aka = [cls.util_get_search_name(x) for x in ch.aka.split('\n')]
+            aka = [cls.util_get_search_name(x) for x in ch.aka.splitlines()]
             if cls.util_get_search_name(name) in aka:
                 return ch
 

@@ -418,7 +418,7 @@ class CliMakeSheet:
                 return sheet_item
             #logger.debug(sheet_item['이름'])
             if 'AKA' in sheet_item:
-                akas = [self.util_get_search_name(x.strip()) for x in self.util_get_search_name(sheet_item['AKA']).split('\n')]
+                akas = [self.util_get_search_name(x.strip()) for x in self.util_get_search_name(sheet_item['AKA']).splitlines()]
                 if self.util_get_search_name(name) in akas:
                     return sheet_item
 
