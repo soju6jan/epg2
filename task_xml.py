@@ -29,28 +29,6 @@ class Task(object):
         need_make = 0
         plugin = args[0]
         mode = args[1]
-        Task.git_pull()
-        if mode == 'manual':
-            need_make = 1
-        output_filepath = Task.get_output_filepath(plugin)
-        if need_make == 0 and os.path.exists(output_filepath) == False:
-            need_make = 2
-        if need_make == 0:
-            time_str = ModelSetting.get(f"user_updated_{plugin}")
-            if time_str == '':
-                need_make = 3
-            else:
-                update_dt = datetime.strptime(time_str, '%Y-%m-%d %H:%M:%S')
-                epg_dt = datetime.strptime(P.ModelSettingDATA.get('updated_time'), '%Y-%m-%d %H:%M:%S')
-                logger.info(f"update_dt : {update_dt}")
-                logger.info(f"epg_dt : {epg_dt}")
-                if update_dt < epg_dt:
-                    need_make = 4
-
-        logger.info(f"EPG 생성 : {plugin} {mode} {need_make}")
-        if need_make == 0:
-            return
-
         
         if plugin == 'klive':
             try:
