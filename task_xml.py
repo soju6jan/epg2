@@ -28,10 +28,9 @@ class Task(object):
         if mode == 'manual':
             need_make = 1
         output_filepath = Task.get_output_filepath(plugin)
-        if need_make == False and os.path.exists(output_filepath) == False:
+        if need_make == 0 and os.path.exists(output_filepath) == False:
             need_make = 2
-
-        if need_make == False:
+        if need_make == 0:
             time_str = ModelSetting.get(f"user_updated_{plugin}")
             if time_str == '':
                 need_make = 3
