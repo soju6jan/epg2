@@ -54,6 +54,14 @@ class LogicUser(LogicModuleBase):
                 elif command == 'epg_time':
                     tmp = P.ModelSettingDATA.get('updated_time')
                     ret = {'ret':'success', 'msg':tmp}
+                elif command == 'celery_epg_time':
+                    if app.config['config']['use_celery']:
+                        result = Task.updated_time.apply_async()
+                        updated_time = result.get()
+                    else:
+                        updated_time = Task.updated_time()
+                    ret = {'ret':'success', 'msg':updated_time}
+
             return jsonify(ret)
         except Exception as e: 
             P.logger.error(f'Exception:{str(e)}')

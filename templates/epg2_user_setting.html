@@ -2,7 +2,7 @@
 {% block content %}
 
 <div>
-  {{ macros.m_button_group([['global_setting_save_btn', '설정 저장'], ['global_one_execute_sub_btn', '1회 실행'], ['global_immediately_execute_sub_btn', '바로 실행'], ['epg_time_btn', 'EPG DB 생성 시간 확인'] ])}}
+  {{ macros.m_button_group([['global_setting_save_btn', '설정 저장'], ['global_one_execute_sub_btn', '1회 실행'], ['global_immediately_execute_sub_btn', '바로 실행'], ['epg_time_btn', 'EPG DB 생성 시간 확인'], ['celery_epg_time_btn', 'EPG DB 생성 시간 확인 (celery)'] ])}}
   {{ macros.m_row_start('5') }}
   {{ macros.m_row_end() }}
   <nav>
@@ -61,6 +61,11 @@ $("body").on('click', '#make_hdhomerun_btn', function(e){
 $("body").on('click', '#epg_time_btn', function(e){
   e.preventDefault();
   global_send_command2('epg_time');
+});
+
+$("body").on('click', '#celery_epg_time_btn', function(e){
+  e.preventDefault();
+  global_send_command2('celery_epg_time');
 });
 
 

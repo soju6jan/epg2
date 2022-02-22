@@ -7,6 +7,11 @@ from .model import ModelEpg2Channel, ModelEpg2Program, ModelEpg2Content
 from lxml import etree as ET
 
 class Task(object):
+    @staticmethod
+    @celery.task
+    def updated_time():
+        return P.ModelSettingDATA.get('updated_time')
+
 
     @staticmethod 
     def get_output_filepath(plugin):
