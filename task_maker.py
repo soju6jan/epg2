@@ -139,7 +139,13 @@ class Task(object):
     def upload():
         epg_sh = os.path.join(os.path.dirname(__file__), 'file', 'epg_upload.sh')
         os.system(f"chmod 777 {os.path.dirname(__file__)}")
-        os.system(f"{epg_sh} {os.path.dirname(__file__)}")
+        #os.system(f"{epg_sh} {os.path.dirname(__file__)}")
+        command = [epg_sh, os.path.dirname(__file__)]
+        logger.warning(command)
+        from support.base import SupportProcess
+        ret = SupportProcess.execute(command, timeout=60)
+        logger.warning(ret)
+
 
  
 if __name__ == '__main__':
