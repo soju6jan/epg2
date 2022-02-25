@@ -7,7 +7,5 @@ git --git-dir=$PLUGIN_HOME/.git pull;
 git --git-dir=$PLUGIN_HOME/.git add $PLUGIN_HOME/file/epg2_data.db;
 git --git-dir=$PLUGIN_HOME/.git add $PLUGIN_HOME/file/xmltv_all2.xml;
 git --git-dir=$PLUGIN_HOME/.git add $PLUGIN_HOME/file/epg_upload.sh;
-git --git-dir=$PLUGIN_HOME/.git add $PLUGIN_HOME/task_maker.py;
-git --git-dir=$PLUGIN_HOME/.git add $PLUGIN_HOME/README.md;
 git --git-dir=$PLUGIN_HOME/.git commit -m $NowDate;
 git --git-dir=$PLUGIN_HOME/.git push
