@@ -150,7 +150,7 @@ class Epg2Daum(object):
                 p.episode_number = tt.episode_number
                 p.part_number = tt.part_number
                 p.rate = tt.rate
-                if p.rate == None:
+                if p.rate != None:
                     p.rate = f'{p.rate}세 이상 시청가'
                 else:
                     p.rate = f'모든 연령 시청가'
