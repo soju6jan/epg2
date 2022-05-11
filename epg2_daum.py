@@ -86,7 +86,8 @@ class Epg2Daum(object):
     def make_epg(cls, channel):
         current_dt = datetime.now()
         try:
-            url = u'https://search.daum.net/search?DA=B3T&w=tot&rtmaxcoll=B3T&q=%s' % channel.daum_id
+            #url = u'https://search.daum.net/search?DA=B3T&w=tot&rtmaxcoll=B3T&q=%s' % channel.daum_id
+            url = u'https://search.daum.net/search?DA=B3T&w=tot&rtmaxcoll=B3T&q=%s' % urllib.parse.quote(channel.daum_id)
             from system.logic_site import SystemLogicSite
             res = SystemLogicSite.get_response_daum(url)
            
